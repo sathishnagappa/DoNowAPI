@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace ContactList
+namespace DoNowAPI
 {
     public class BundleConfig
     {

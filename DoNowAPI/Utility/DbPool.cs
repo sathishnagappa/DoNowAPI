@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Data; 
 
-namespace ContactList.Utility
+namespace DoNowAPI.Utility
 {
     
 

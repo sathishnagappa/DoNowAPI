@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace ContactList.Models
+namespace DoNowAPI.Models
 {
     public class SFDC
     {

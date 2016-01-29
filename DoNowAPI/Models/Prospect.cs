@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
  
 
-namespace ContactList.Models
+namespace DoNowAPI.Models
 {
     public class Prospect
     {

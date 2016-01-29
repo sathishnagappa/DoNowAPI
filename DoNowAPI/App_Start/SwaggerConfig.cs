@@ -5,11 +5,11 @@ using System.Web.Http.Description;
 using Swashbuckle.Application;
 using Swashbuckle.Swagger;
 using WebActivatorEx;
-using ContactList;
+using DoNowAPI;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
-namespace ContactList
+namespace DoNowAPI
 {
     public class SwaggerConfig
     {

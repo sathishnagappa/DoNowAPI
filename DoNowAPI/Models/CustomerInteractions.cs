@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using MySql.Data.MySqlClient;
 
-namespace ContactList.Models
+namespace DoNowAPI.Models
 {
     public class CustomerInteractions
     {

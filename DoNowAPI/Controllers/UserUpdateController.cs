@@ -2,7 +2,7 @@
 using System.Web.Http;
 using MySql.Data.MySqlClient;
 using System.Configuration;
-using ContactList.Models;
+using DoNowAPI.Models;
 
 namespace DoNowAPI.Controllers
 {

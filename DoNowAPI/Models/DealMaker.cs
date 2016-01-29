@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ContactList.Models
+namespace DoNowAPI.Models
 {
     public class DealMaker
     {
