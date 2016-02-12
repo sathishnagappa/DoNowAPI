@@ -43,6 +43,7 @@ namespace DoNowAPI.Models
         public string EMAILID { get; set; }    
         public long USER_LEAD_STATUS { get; set; }
         public long USER_ID { get; set; }
+        public string LEAD_TITLE { get; set; }
 
         //the below mentiond columns should be removed
         public string StartTime { get; set; }

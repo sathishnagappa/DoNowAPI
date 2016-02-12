@@ -12,7 +12,7 @@ namespace DoNowAPI.Controllers
         private string MyConnnectionString = ConfigurationManager.AppSettings["DoNowConnectionString"];
 
         [HttpGet]
-        public CustomerDetails Get(long LeadID, long UserID)
+        public CustomerDetails Get(string LeadName, long UserID)
         {
             TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
             long secondsSinceEpoch = (long)t.TotalMilliseconds;
@@ -27,11 +27,18 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {  
-                        // cmd.CommandText = "SELECT A.ID AS LEAD_ID, IFNULL(A.LEAD_NAME,'') AS LEAD_NAME, IFNULL(A.LEAD_COMP_NAME, '') AS COMPANY_NAME,  IFNULL(A.LEAD_COMP_STATE, '') AS STATE, IFNULL(A.LEAD_COMP_CITY, '') AS CITY, IFNULL(A.LEAD_COMP_INDUSTRY, '') AS COMPANY_INFO,  IFNULL(A.LINE_OF_BUSINESS, '') AS BUSINESS_NEED,   IFNULL(A.LEAD_COMP_PHONE_NO_1, '') AS PHONE,   IFNULL(A.LEAD_COMP_EMAIL_ID, '') AS EMAILID FROM dn_lead_det_e A WHERE A.ID=" +LeadID;
-                        cmd.CommandText = "SELECT A.ID AS LEAD_ID, IFNULL(A.LEAD_NAME,'') AS LEAD_NAME, IFNULL(A.LEAD_COMP_NAME, '') AS COMPANY_NAME,"
-            + " IFNULL(A.LEAD_COMP_STATE, '') AS STATE, IFNULL(A.LEAD_COMP_CITY, '') AS CITY, IFNULL(A.LEAD_COMP_INDUSTRY, '') AS COMPANY_INFO,"
-            + " IFNULL(A.LINE_OF_BUSINESS, '') AS BUSINESS_NEED,   IFNULL(A.LEAD_COMP_PHONE_NO_1, '') AS PHONE,"
-            + " IFNULL(A.LEAD_COMP_EMAIL_ID, '') AS EMAILID, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, B.score AS LEAD_SCORE FROM dn_lead_det_e A INNER JOIN dn_scoring_e B ON A.ID = B.LEAD_ID WHERE B.USER_ID=" + UserID + " and A.ID=" + LeadID;
+                    
+                    cmd.CommandText = " SELECT A.ID AS LEAD_ID, IFNULL(A.LEAD_NAME,'') AS LEAD_NAME, IFNULL(A.LEAD_TITLE, '') as LEAD_TITLE, IFNULL(A.LEAD_COMP_NAME, '')  "
+                                        + " AS COMPANY_NAME,IFNULL(A.LEAD_COMP_STATE, '') AS STATE, IFNULL(A.LEAD_COMP_CITY, '') AS CITY, IFNULL(A.LEAD_COMP_INDUSTRY, '') AS  "
+                                        + " COMPANY_INFO, IFNULL(A.LINE_OF_BUSINESS, '') AS BUSINESS_NEED,   IFNULL(A.LEAD_COMP_PHONE_NO_1, '') AS PHONE,  "
+                                        + " IFNULL(A.LEAD_COMP_EMAIL_ID, '') AS EMAILID, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, B.score AS LEAD_SCORE, IFNULL(A.LEAD_COMP_ADDRESS,'') AS  "
+                                        + " LEAD_COMP_ADDRESS , IFNULL(A.LEAD_COMP_ZIPCODE,'') AS LEAD_COMP_ZIPCODE, IFNULL(A.LEAD_COMP_COUNTRY,'') AS LEAD_COMP_COUNTRY, "
+                                        + " IFNULL(A.Fiscal_Year_End,'') AS FiscalYE, IFNULL(A.Annual_Revenue,'') AS Revenue, IFNULL(A.Net_income,'') AS NetIncome, "
+                                        + " IFNULL(A.Number_of_Employee,'') AS Employees, IFNULL(A.Market_Value,'') AS MarketValue, IFNULL(A.Year_Of_Founding,'') AS YearFounded, "
+                                        + " IFNULL(A.DBPreScreen_Score,'') AS IndustryRiskScore,IFNULL(A.Lead_Comp_County,'') AS County, "
+                                        + " IFNULL(A.Web_Address,'') AS WebAddress FROM dn_lead_det_e A INNER JOIN dn_scoring_e B ON A.ID = B.LEAD_ID  "
+                                        + " WHERE B.USER_ID=" + UserID + " and A.LEAD_NAME= '" + LeadName + "'";
+
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -49,7 +56,21 @@ namespace DoNowAPI.Controllers
                                 CompanyInfo = reader["COMPANY_INFO"].ToString(),
                                 BusinessNeeds = reader["BUSINESS_NEED"].ToString(),
                                 LeadSource = (int)reader["LEAD_SOURCE"],
-                                LeadScore = (int)reader["LEAD_SCORE"]
+                                LeadScore = (int)reader["LEAD_SCORE"],
+                                LeadTitle = reader["LEAD_TITLE"].ToString(),
+                                ADDRESS = reader["LEAD_COMP_ADDRESS"].ToString(),
+                                ZIPCODE = reader["LEAD_COMP_ZIPCODE"].ToString(),
+                                COUNTRY = reader["LEAD_COMP_COUNTRY"].ToString(),
+                                FISCALYE = reader["FiscalYE"].ToString(),
+                                REVENUE = reader["Revenue"].ToString(),
+                                NETINCOME = reader["NetIncome"].ToString(),
+                                EMPLOYEES = reader["Employees"].ToString(),
+                                MARKETVALUE = reader["MarketValue"].ToString(),
+                                YEARFOUNDED = reader["YearFounded"].ToString(),
+                                INDUSTRYRISK = reader["IndustryRiskScore"].ToString(),
+                                COUNTY = reader["County"].ToString(),
+                                WebAddress = reader["WebAddress"].ToString()
+
                             };
 
                         }
@@ -137,14 +158,14 @@ namespace DoNowAPI.Controllers
                     //Deal Maker data
                     DealMaker dealMaker = null;
 
-                    SQL = "SELECT A.ID AS BROKER_ID, CONCAT(IFNULL(A.BROKER_FIRST_NAME, ''), IFNULL(A.BROKER_LAST_NAME, '')) AS BROKER_NAME, IFNULL(A.BROKER_EMAIL,'') AS BROKER_EMAIL, "
+                    SQL = "SELECT A.ID AS BROKER_ID, CONCAT(IFNULL(A.BROKER_FIRST_NAME, ''), ' ', IFNULL(A.BROKER_LAST_NAME, '')) AS BROKER_NAME, IFNULL(A.BROKER_EMAIL,'') AS BROKER_EMAIL, "
                         + " IFNULL(A.BROKER_STATE, '') AS STATE,IFNULL(A.BROKER_COUNTRY, '') AS COUNTRY,IFNULL(A.BROKER_INDUSTRY, '') AS INDUSTRY, "
                         + " IFNULL(A.BROKER_PHONE_NO_1, '') AS PHONE_NO,  IFNULL(A.BROKER_COMPANY, '') AS COMPANY,   IFNULL(A.broker_city, '') AS CITY, "
                         + " IFNULL(A.CREATE_TS, '') AS CREATE_TIME,     B.BROKER_SCORE,  "
                         + " IFNULL(A.BROKER_FEE,'') AS BROKER_FEE,  IFNULL(A.BROKER_TOTAL_EARNING,'') AS BROKER_TOTAL_EARNING, "
                         + " IFNULL(A.CONNECTION_TO_LEAD, '') AS CONNECTION_TO_LEAD, IFNULL(A.DOMAIN_EXPERTISE, '') AS DOMAIN_EXPERTISE, "
                             + " IFNULL(A.BROKER_TITLE,'') AS BROKER_TITLE,  A.USER_ID AS BROKER_USERID,  IFNULL(A.LINE_OF_BUSINESS,'') AS LINE_OF_BUSINESS, B.Broker_Status AS BROKER_STATUS, "
-                            + " B.LEAD_ID  FROM dn_broker_det_e A INNER JOIN dn_broker_scoring_e B ON A.ID = B.BROKER_ID WHERE B.LEAD_ID=" + LeadID + "  and B.Broker_Status = 4 limit 1";
+                            + " B.LEAD_ID  FROM dn_broker_det_e A INNER JOIN dn_broker_scoring_e B ON A.ID = B.BROKER_ID WHERE B.LEAD_ID=" + customerData.LeadId + "  and B.Broker_Status = 4 limit 1";
 
                     cmd.CommandText = SQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -206,7 +227,9 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT A.ID AS LEAD_ID, IFNULL(A.LEAD_NAME, '') AS LEAD_NAME, IFNULL(A.LEAD_COMP_NAME, '') AS COMPANY_NAME FROM dn_lead_det_e A INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID WHERE C.USER_ID = " + UserID + " order by A.LEAD_NAME";
+                    cmd.CommandText = "select distinct IFNULL(LEAD_NAME, '') AS LEAD_NAME, IFNULL(LEAD_COMP_NAME,'') as LEAD_COMP_NAME from dn_lead_det_e a " 
+                                     + " inner join dn_scoring_e b on a.id = b.lead_id where a.EXISTING_CUSTOMER = 'Y' and b.User_id = " + UserID + " and b.u_l_status in (4,3) order by LEAD_NAME";
+
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -214,12 +237,15 @@ namespace DoNowAPI.Controllers
                             customerList.Add(new CustomerMaster
                             {
 
-                                LeadId = long.Parse(reader["LEAD_ID"].ToString()),
+                                //LeadId = long.Parse(reader["LEAD_ID"].ToString()),
                                 Name = reader["LEAD_NAME"].ToString(),
-                                Company = reader["COMPANY_NAME"].ToString()
+                                Company = reader["LEAD_COMP_NAME"].ToString(),
 
+                                //should be reoved added for identifying the performance 
+                                StartTime = null,
+                                EndTime = null
 
-                            });
+                        });
 
                         }
                     }
@@ -234,11 +260,11 @@ namespace DoNowAPI.Controllers
             string EndTime = secondsSinceEpoch.ToString();
 
 
-            if (customerList != null)
+          /*  if (customerList != null)
             {
                 customerList[0].StartTime = startTime;
                 customerList[0].EndTime = EndTime;
-            }
+            } */
                 return customerList;
         }       
     }

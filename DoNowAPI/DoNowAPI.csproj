@@ -141,6 +141,10 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\ContactList%28clresourcegroup%29 %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\DoNowAPI - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\DoNowAPI - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\DoNowAPI%28resdonowx%29.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -169,6 +173,7 @@
     <Compile Include="Controllers\CustomerDetailsController.cs" />
     <Compile Include="Controllers\CustomerFeedController.cs" />
     <Compile Include="Controllers\CustomerInteractionController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DealHistoryController.cs" />
     <Compile Include="Controllers\DealMakerController.cs" />
     <Compile Include="Controllers\IndustryController.cs" />
@@ -194,6 +199,7 @@
     <Compile Include="Models\CustomerFeed.cs" />
     <Compile Include="Models\CustomerInteractions.cs" />
     <Compile Include="Models\CustomerMaster.cs" />
+    <Compile Include="Models\Dashboard.cs" />
     <Compile Include="Models\DealHistory.cs" />
     <Compile Include="Models\DealMaker.cs" />
     <Compile Include="Models\LeadDetails.cs" />

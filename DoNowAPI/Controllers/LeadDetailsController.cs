@@ -37,8 +37,8 @@ namespace DoNowAPI.Controllers
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
                     
-                    string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
-                 + "  C.u_l_status,  C.SCORE AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status not in (6,0) and C.USER_ID=" + id + " order by u_l_status asc, C.SCORE desc ";
+                    string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
+                 + "  C.u_l_status,  C.SCORE AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status not in (6,0) and C.USER_ID=" + id + " order by u_l_status asc, C.update_ts desc ";
                     cmd.CommandText = stringSQL;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -61,9 +61,10 @@ namespace DoNowAPI.Controllers
                                 USER_LEAD_STATUS = (int)reader["u_l_status"],
                                 LeadIndustry = reader["LEAD_INDUSTRY"].ToString(),
                                 CreatedOn = reader["LEAD_CREATE_TIME"].ToString(),
-                                LEAD_TYPE = reader["LEAD_TYPE"].ToString()
-                             
-                        });
+                                LEAD_TYPE = reader["LEAD_TYPE"].ToString(),
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString()
+
+                            });
                         }
                     }
 
@@ -103,11 +104,18 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    // cmd.CommandText = "SELECT A.ID AS LEAD_ID, IFNULL(A.LEAD_NAME,'') AS LEAD_NAME, IFNULL(A.LEAD_COMP_NAME, '') AS COMPANY_NAME,  IFNULL(A.LEAD_COMP_STATE, '') AS STATE, IFNULL(A.LEAD_COMP_CITY, '') AS CITY, IFNULL(A.LEAD_COMP_INDUSTRY, '') AS COMPANY_INFO,  IFNULL(A.LINE_OF_BUSINESS, '') AS BUSINESS_NEED,   IFNULL(A.LEAD_COMP_PHONE_NO_1, '') AS PHONE,   IFNULL(A.LEAD_COMP_EMAIL_ID, '') AS EMAILID FROM dn_lead_det_e A WHERE A.ID=" +LeadID;
-           cmd.CommandText = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.LEAD_COMP_INDUSTRY AS INDUSTRY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
-+ " A.STATUS, IFNULL(A.REASON_FOR_PASS,'') AS REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS EMAILID, C.u_l_status, C.USER_ID, "
-+ " B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status <> 6 and C.LEAD_ID= " + LeadID + " and C.USER_ID = " + UserID + " order by u_l_status asc, C.SCORE desc ";
-
+                   
+                     cmd.CommandText = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE,  "
+                                + " A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.LEAD_COMP_INDUSTRY AS "
+                                + " INDUSTRY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME, "
+                                + " A.STATUS, IFNULL(A.REASON_FOR_PASS,'') AS REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS "
+                                + " EMAILID, C.u_l_status, C.USER_ID, B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE, IFNULL(A.LEAD_COMP_ADDRESS,'') AS "
+                                + " LEAD_COMP_ADDRESS , IFNULL(A.LEAD_COMP_ZIPCODE,'') AS LEAD_COMP_ZIPCODE, IFNULL(A.LEAD_COMP_COUNTRY,'') AS LEAD_COMP_COUNTRY, "
+                                + " IFNULL(A.Fiscal_Year_End,'') AS FiscalYE, IFNULL(A.Annual_Revenue,'') AS Revenue, IFNULL(A.Net_income,'') AS NetIncome, "
+                                + " IFNULL(A.Number_of_Employee,'') AS Employees, IFNULL(A.Market_Value,'') AS MarketValue, IFNULL(A.Year_Of_Founding,'') AS "
+                                + " YearFounded, IFNULL(A.DBPreScreen_Score,'') AS IndustryRiskScore, IFNULL(A.Lead_Comp_County,'') AS County, "
+                                + " IFNULL(A.Web_Address,'') AS WebAddress  FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID "
+                                + " INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID WHERE C.u_l_status <> 6 and C.LEAD_ID= " + LeadID + " and C.USER_ID = " + UserID;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -131,7 +139,20 @@ namespace DoNowAPI.Controllers
                                 PHONE = reader["PHONE"].ToString(),
                                 EMAILID = reader["EMAILID"].ToString(),
                                 USER_LEAD_STATUS = (int)reader["u_l_status"],
-                                USER_ID = long.Parse(reader["USER_ID"].ToString())
+                                USER_ID = long.Parse(reader["USER_ID"].ToString()),
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString(),
+                                ADDRESS = reader["LEAD_COMP_ADDRESS"].ToString(),
+                                ZIPCODE = reader["LEAD_COMP_ZIPCODE"].ToString(),
+                                COUNTRY = reader["LEAD_COMP_COUNTRY"].ToString(),
+                                FISCALYE = reader["FiscalYE"].ToString(),
+                                REVENUE = reader["Revenue"].ToString(),
+                                NETINCOME = reader["NetIncome"].ToString(),
+                                EMPLOYEES = reader["Employees"].ToString(),
+                                MARKETVALUE = reader["MarketValue"].ToString(),
+                                YEARFOUNDED = reader["YearFounded"].ToString(),
+                                INDUSTRYRISK = reader["IndustryRiskScore"].ToString(),
+                                COUNTY = reader["County"].ToString(),
+                                WebAddress = reader["WebAddress"].ToString()
                             };
 
                         }
@@ -351,7 +372,7 @@ namespace DoNowAPI.Controllers
                 EndTimecon = secondsSinceEpochcon.ToString();
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.Company_info AS COMPANY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
+                    string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.Company_info AS COMPANY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
                    + " A.STATUS, A.REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS EMAILID, C.u_l_status, C.USER_ID, "
                    + " B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status <> 6 and C.LEAD_ID= " + id + " and C.USER_ID = " + userid + " order by u_l_status asc, C.SCORE desc ";
                     cmd.CommandText = stringSQL;
@@ -384,7 +405,8 @@ namespace DoNowAPI.Controllers
                                 PHONE = reader["PHONE"].ToString(),
                                 EMAILID = reader["EMAILID"].ToString(),
                                 USER_LEAD_STATUS = long.Parse(reader["u_l_status"].ToString()),
-                                USER_ID = long.Parse(reader["USER_ID"].ToString())
+                                USER_ID = long.Parse(reader["USER_ID"].ToString()),
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString()
                             };
                         }
                     }
@@ -441,7 +463,8 @@ namespace DoNowAPI.Controllers
                                 USER_LEAD_STATUS = (int)reader["u_l_status"],
                                 LeadIndustry = reader["LEAD_INDUSTRY"].ToString(),
                                 CreatedOn = reader["LEAD_CREATE_TIME"].ToString(),
-                                LEAD_TYPE = reader["LEAD_TYPE"].ToString()
+                                LEAD_TYPE = reader["LEAD_TYPE"].ToString(),
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString()
 
                             });
                         }

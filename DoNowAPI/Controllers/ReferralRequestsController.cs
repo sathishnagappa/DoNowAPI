@@ -93,9 +93,20 @@ namespace DoNowAPI.Controllers
                 connection.Open(); 
 
                 string stringSQL;
-                stringSQL = "SELECT ID,IFNULL(SellerName,'') AS SellerName,Status,IFNULL(CompanyInfo,'') AS CompanyInfo, IFNULL(CompanyName,'') AS CompanyName, IFNULL(Prospect,'') AS Prospect, "
-                                   + " IFNULL(LeadEmailID,'') AS LeadEmailID,IFNULL(CreatedOn,'') AS CreatedOn, BrokerUserID,BrokerID,LeadID,SellerUserID,IFNULL(City,'') AS City,IFNULL(State,'') AS State, "
-                                   + " IFNULL(BusinessNeeds,'') AS BusinessNeeds,IFNULL(Industry,'') AS Industry  FROM referral_requests r where BrokerUserID=" + BrokerUserID;
+                stringSQL = " SELECT r.ID,IFNULL(SellerName,'') AS SellerName,r.Status,IFNULL(CompanyInfo,'') AS CompanyInfo, IFNULL(CompanyName,'') AS CompanyName, "
+                                + " IFNULL(Prospect,'') AS Prospect,IFNULL(LeadEmailID,'') AS LeadEmailID,IFNULL(CreatedOn,'') AS CreatedOn, BrokerUserID,BrokerID, "
+                                + " LeadID,SellerUserID,IFNULL(r.City,'') AS City,IFNULL(r.State,'') AS State,IFNULL(BusinessNeeds,'') AS BusinessNeeds,"
+                                + " IFNULL(r.Industry,'') AS Industry, IFNULL(B.Title,'') as SellerTitle,IFNULL(B.City,'') AS SellerCity,"
+                                + " IFNULL(B.State,'') AS SellerState, IFNULL(B.Company,'') as SellerCompany,IFNULL(B.Industry,'') as SellerIndustry,"
+                                + " IFNULL(B.Office_Address,'') as SellerOfficeAddress, IFNULL(B.Zip,'') as SellerZipCode,IFNULL(B.Phone,'') as SellerPhone,"
+                                + " IFNULL(B.LINE_OF_BUSINESS,'') as SellerLOB, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE,"
+                                + " A.LEAD_COMP_STATE AS LEAD_STATE, A.LEAD_COMP_CITY AS LEAD_CITY, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY, A.LINE_OF_BUSINESS AS LEAD_LOB,"
+                                + " A.LEAD_COMP_PHONE_NO_1 AS LEAD_PHONE, IFNULL(A.LEAD_COMP_ADDRESS,'') AS LEAD_COMP_ADDRESS , IFNULL(A.LEAD_COMP_ZIPCODE,'') AS LEAD_COMP_ZIPCODE,"
+                                + " IFNULL(A.LEAD_COMP_COUNTRY,'') AS LEAD_COMP_COUNTRY, IFNULL(A.Fiscal_Year_End,'') AS FiscalYE, IFNULL(A.Annual_Revenue,'') AS Revenue,"
+                                + " IFNULL(A.Net_income,'') AS NetIncome, IFNULL(A.Number_of_Employee,'') AS Employees, IFNULL(A.Market_Value,'') AS MarketValue,"
+                                + " IFNULL(A.Year_Of_Founding,'') AS YearFounded, IFNULL(A.DBPreScreen_Score,'') AS IndustryRiskScore, IFNULL(A.Lead_Comp_County,'') AS County,"
+                                + " IFNULL(A.Web_Address,'') AS WebAddress FROM referral_requests r inner join user_details B on r.SellerUserID = B.ID"
+                                + " Inner join dn_lead_det_e A on A.ID = r.LeadID where BrokerUserID=" + BrokerUserID;
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
                     cmd.CommandText = stringSQL;
@@ -120,7 +131,36 @@ namespace DoNowAPI.Controllers
                             BrokerID = long.Parse(reader["BrokerID"].ToString()),
                             BrokerUserID = long.Parse(reader["BrokerUserID"].ToString()),
                             Status = int.Parse(reader["Status"].ToString()),
-                            SellerUserID = long.Parse(reader["SellerUserID"].ToString())
+                            SellerUserID = long.Parse(reader["SellerUserID"].ToString()),
+                            SellerTitle = reader["SellerTitle"].ToString(),
+                            SellerCity = reader["SellerCity"].ToString(),
+                            SellerState = reader["SellerState"].ToString(),
+                            SellerCompany = reader["SellerCompany"].ToString(),
+                            SellerIndustry = reader["SellerIndustry"].ToString(),
+                            SellerOfficeAddress = reader["SellerOfficeAddress"].ToString(),
+                            SellerZipCode = reader["SellerZipCode"].ToString(),
+                            SellerPhone = reader["SellerPhone"].ToString(),
+                            SellerLOB = reader["SellerLOB"].ToString(),
+                            COMPANY_NAME = reader["COMPANY_NAME"].ToString(),
+                            LEAD_TITLE = reader["LEAD_TITLE"].ToString(),
+                            LEAD_STATE = reader["LEAD_STATE"].ToString(),
+                            LEAD_CITY = reader["LEAD_CITY"].ToString(),
+                            LEAD_INDUSTRY = reader["LEAD_INDUSTRY"].ToString(),
+                            LEAD_LOB = reader["LEAD_LOB"].ToString(),
+                            LEAD_PHONE = reader["LEAD_PHONE"].ToString(),
+                            LEAD_COMP_ADDRESS = reader["LEAD_COMP_ADDRESS"].ToString(),
+                            LEAD_COMP_ZIPCODE = reader["LEAD_COMP_ZIPCODE"].ToString(),
+                            LEAD_COMP_COUNTRY = reader["LEAD_COMP_COUNTRY"].ToString(),
+                            FiscalYE = reader["FiscalYE"].ToString(),
+                            Revenue = reader["Revenue"].ToString(),
+                            NetIncome = reader["NetIncome"].ToString(),
+                            Employees = reader["Employees"].ToString(),
+                            MarketValue = reader["MarketValue"].ToString(),
+                            YearFounded = reader["YearFounded"].ToString(),
+                            IndustryRiskScore = reader["IndustryRiskScore"].ToString(),
+                            County = reader["County"].ToString(),
+                            WebAddress = reader["WebAddress"].ToString()
+
 
                         });
                     }
@@ -171,7 +211,7 @@ namespace DoNowAPI.Controllers
                     cmd.Parameters.AddWithValue("@Status", value.Status);
                     cmd.Parameters.AddWithValue("@CompanyInfo", value.CompanyInfo);
                     cmd.Parameters.AddWithValue("@LeadEmailID", value.LeadEmailID);
-                    cmd.Parameters.AddWithValue("@CreatedOn", value.CreatedOn);
+                    cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Parse(value.CreatedOn));
                     cmd.Parameters.AddWithValue("@BrokerUserID", value.BrokerUserID);
                     cmd.Parameters.AddWithValue("@BrokerID", value.BrokerID);
                     cmd.Parameters.AddWithValue("@LeadID", value.LeadID);

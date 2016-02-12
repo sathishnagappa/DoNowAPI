@@ -18,6 +18,7 @@ namespace DoNowAPI.Models
         public string LeadIndustry { get; set; }
         public string CreatedOn { get; set; }
         public string LEAD_TYPE { get; set; }
+        public string LEAD_TITLE { get; set; }
 
         //the below mentiond columns should be removed
        public string StartTime { get; set; }

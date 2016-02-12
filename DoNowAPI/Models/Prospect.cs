@@ -26,9 +26,23 @@ namespace DoNowAPI.Models
         public string REASON_FOR_PASS { get; set; }
         public int USER_LEAD_STATUS { get; set; }
         public long USER_ID { get; set; }
+        public string LEAD_TITLE { get; set; }
         public List<CustomerInteractions> customerInteractionList { get; set; }
         public List<MeetingList> UserMeetingList { get; set; }       
         public List<DealMaker> brokerList { get; set; }
+        public string ADDRESS { get; set; }
+        public string ZIPCODE { get; set; }
+        public string COUNTRY { get; set; }
+        public string FISCALYE { get; set; }
+        public string REVENUE { get; set; }
+        public string NETINCOME { get; set; }
+        public string EMPLOYEES { get; set; }
+        public string MARKETVALUE { get; set; }
+        public string YEARFOUNDED { get; set; }
+        public string INDUSTRYRISK { get; set; }
+        public string COUNTY { get; set; }
+        public string WebAddress { get; set; }
+
 
         //the below mentiond columns should be removed
         public string StartTime { get; set; }
