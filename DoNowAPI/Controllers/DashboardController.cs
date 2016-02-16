@@ -46,8 +46,10 @@ namespace DoNowAPI.Controllers
                                 total_accepted = (int)reader["total_accepted"],
                                 total_referred = (int)reader["total_referred"],
                                 next_meeting = reader["next_meeting"].ToString(),
-                                title = reader["title"].ToString()
-
+                                title = reader["title"].ToString(),
+                                CustomerName = reader["CustomerName"].ToString(),
+                                City = reader["City"].ToString(),
+                                State = reader["State"].ToString()
                             };
                         }
                     }

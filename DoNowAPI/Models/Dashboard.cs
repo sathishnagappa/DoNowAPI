@@ -22,6 +22,10 @@ namespace DoNowAPI.Models
         public int total_referred { get; set; }
         public string next_meeting { get; set; }
         public string title { get; set; }
+        public string CustomerName { get; set; }
+        public string City {get; set;}
+        public string State { get; set; }
+ 
 
     }
 }
