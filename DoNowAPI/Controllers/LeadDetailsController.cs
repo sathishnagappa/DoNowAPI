@@ -38,7 +38,8 @@ namespace DoNowAPI.Controllers
                 {
                     
                     string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
-                 + "  C.u_l_status,  C.SCORE AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status not in (6,0) and C.USER_ID=" + id + " order by u_l_status asc, C.update_ts desc ";
+                 + "  C.u_l_status,  C.SCORE AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.score is not null and C.u_l_status not in (6,0) and C.USER_ID=" + id + " order by u_l_status asc, C.update_ts desc ";
+
                     cmd.CommandText = stringSQL;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -200,7 +201,8 @@ namespace DoNowAPI.Controllers
                                 LeadId = int.Parse(reader["LeadID"].ToString()),
                                 State = reader["State"].ToString(),
                                 Subject = reader["Subject"].ToString(),
-                                Status = reader["Status"].ToString()
+                                Status = reader["Status"].ToString(),
+                                Comments = reader["Comments"].ToString()
 
                             });
                         }
@@ -219,7 +221,7 @@ namespace DoNowAPI.Controllers
                         + " IFNULL(A.BROKER_FEE,'') AS BROKER_FEE,  IFNULL(A.BROKER_TOTAL_EARNING,'') AS BROKER_TOTAL_EARNING, "
                         + " IFNULL(A.CONNECTION_TO_LEAD, '') AS CONNECTION_TO_LEAD, IFNULL(A.DOMAIN_EXPERTISE, '') AS DOMAIN_EXPERTISE, "
                          + " IFNULL(A.BROKER_TITLE,'') AS BROKER_TITLE,  A.USER_ID AS BROKER_USERID,  IFNULL(A.LINE_OF_BUSINESS,'') AS LINE_OF_BUSINESS, B.Broker_Status AS BROKER_STATUS, "
-                          + " B.LEAD_ID  FROM dn_broker_det_e A INNER JOIN dn_broker_scoring_e B ON A.ID = B.BROKER_ID WHERE B.LEAD_ID=" + LeadID + " and A.USER_ID <> " + UserID + " order by B.BROKER_SCORE";
+                          + " B.LEAD_ID  FROM dn_broker_det_e A INNER JOIN dn_broker_scoring_e B ON A.ID = B.BROKER_ID WHERE B.LEAD_ID=" + LeadID + " and A.USER_ID <> " + UserID + " order by B.BROKER_SCORE desc";
 
 
                     cmd.CommandText = SQL;

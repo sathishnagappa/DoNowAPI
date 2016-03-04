@@ -17,5 +17,6 @@ namespace DoNowAPI.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Status { get; set; }
+        public string Comments { get; set; }
     }
 }

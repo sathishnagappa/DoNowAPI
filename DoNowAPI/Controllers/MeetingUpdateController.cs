@@ -20,7 +20,7 @@ namespace DoNowAPI.Controllers
                 connection.Open();
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    stringSQL = "UPDATE ui_meetinglist set status='" + value.Status + "' where ID= " + value.Id;
+                    stringSQL = "UPDATE ui_meetinglist set status='" + value.Status + "', Comments='" + value.Comments + "' where ID= " + value.Id;
                     cmd.CommandText = stringSQL;
                     result = cmd.ExecuteNonQuery();
                 }

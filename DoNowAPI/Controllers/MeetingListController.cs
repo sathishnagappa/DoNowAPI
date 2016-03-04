@@ -37,7 +37,8 @@ namespace DoNowAPI.Controllers
                             LeadId = int.Parse(reader["LeadID"].ToString()),
                             State = reader["State"].ToString(),
                             Subject = reader["Subject"].ToString(),
-                            Status = reader["Status"].ToString()
+                            Status = reader["Status"].ToString(),
+                            Comments = reader["Comments"].ToString()
 
                         });
                     }
@@ -76,7 +77,8 @@ namespace DoNowAPI.Controllers
                             LeadId = int.Parse(reader["LeadID"].ToString()),
                             State = reader["State"].ToString(),
                             Subject = reader["Subject"].ToString(),
-                            Status = reader["Status"].ToString()
+                            Status = reader["Status"].ToString(),
+                            Comments = reader["Comments"].ToString()
 
                         });
                     }
@@ -121,7 +123,7 @@ namespace DoNowAPI.Controllers
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { cmd.CommandText = "SELECT max(ID) FROM donow.ui_meetinglist";
                     ID = long.Parse(cmd.ExecuteScalar().ToString()) + 1;
-                    cmd.CommandText = "INSERT INTO donow.ui_meetinglist VALUES(@ID,@UserID,@LeadID,@Subject,@StartDate,@EndDate,@CustomerName,@City,@State,@Status)";
+                    cmd.CommandText = "INSERT INTO donow.ui_meetinglist VALUES(@ID,@UserID,@LeadID,@Subject,@StartDate,@EndDate,@CustomerName,@City,@State,@Status,@Comments)";
 
                     cmd.Parameters.AddWithValue("@ID", int.Parse(ID.ToString()));
                     cmd.Parameters.AddWithValue("@UserID", value.UserId);
@@ -133,6 +135,7 @@ namespace DoNowAPI.Controllers
                     cmd.Parameters.AddWithValue("@City", value.City);
                     cmd.Parameters.AddWithValue("@State", value.State);
                     cmd.Parameters.AddWithValue("@Status", value.Status);
+                    cmd.Parameters.AddWithValue("@Comments", value.Status);
 
                     cmd.ExecuteNonQuery();
                 }

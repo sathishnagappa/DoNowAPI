@@ -41,8 +41,10 @@ namespace DoNowAPI.Models
         public string INDUSTRYRISK { get; set; }
         public string COUNTY { get; set; }
         public string WebAddress { get; set; }
+        public int DealsClosed { get; set;  }
         //the below mentiond columns should be removed
         /* public string StartTime { get; set; }
          public string EndTime { get; set; } */
+      
     }
 }

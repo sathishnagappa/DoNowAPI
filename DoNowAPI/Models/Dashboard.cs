@@ -25,7 +25,10 @@ namespace DoNowAPI.Models
         public string CustomerName { get; set; }
         public string City {get; set;}
         public string State { get; set; }
- 
+        public int MeetingID { get; set; }
+        public string Comments { get; set; }
+
+
 
     }
 }

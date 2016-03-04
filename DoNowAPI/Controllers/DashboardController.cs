@@ -49,7 +49,10 @@ namespace DoNowAPI.Controllers
                                 title = reader["title"].ToString(),
                                 CustomerName = reader["CustomerName"].ToString(),
                                 City = reader["City"].ToString(),
-                                State = reader["State"].ToString()
+                                State = reader["State"].ToString(),
+                                MeetingID = int.Parse(reader["MeetingID"].ToString()),
+                                Comments = reader["Comments"].ToString()
+
                             };
                         }
                     }
