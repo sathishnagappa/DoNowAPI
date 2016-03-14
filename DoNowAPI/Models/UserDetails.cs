@@ -30,6 +30,8 @@ namespace DoNowAPI.Models
         public bool IsBusinessUpdatesRequired { get; set; }
         public string ImageUrl { get; set; }
         public string LineOfBusiness { get; set; }
+        public int MeetingCount { get; set; }
+        public int LeadCount { get; set; }
 
         //the below mentiond columns should be removed
 

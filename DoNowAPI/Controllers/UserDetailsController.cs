@@ -74,9 +74,13 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT * FROM donow.user_details where Email='" + EmailID.ToString() + "'";
+                    //cmd.CommandText = "SELECT * FROM donow.user_details where Email='" + EmailID.ToString() + "'";
+                    string stringSQL = "dn_GetUserByEmail";
+                    cmd.CommandText = stringSQL;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Email", EmailID);
 
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -104,7 +108,9 @@ namespace DoNowAPI.Controllers
                             State = reader["State"].ToString(),
                             Title = reader["Title"].ToString(),
                             LineOfBusiness = reader["LINE_OF_BUSINESS"].ToString(),
-                            Zip = reader["Zip"].ToString()  
+                            Zip = reader["Zip"].ToString(),
+                            MeetingCount = (int)reader["MeetingCount"],
+                            LeadCount = (int)reader["LeadCount"]
                         };
                     }
                 }
@@ -185,10 +191,14 @@ namespace DoNowAPI.Controllers
                  startTime2 = secondsSinceEpoch2.ToString();
 
                 using (MySqlCommand cmd = connection.CreateCommand())
-                { 
-                    cmd.CommandText = "SELECT * FROM donow.user_details where User_Name ='" + name + "'";
+                {
+                    //cmd.CommandText = "SELECT * FROM donow.user_details where User_Name ='" + name + "'";
+                    string stringSQL = "dn_GetUserByName";
+                    cmd.CommandText = stringSQL;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@name", name);
 
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
                         TimeSpan t3 = DateTime.UtcNow - new DateTime(1970, 1, 1);
                         long secondsSinceEpoch3 = (long)t3.TotalMilliseconds;
@@ -221,7 +231,9 @@ namespace DoNowAPI.Controllers
                             State = reader["State"].ToString(),
                             Title = reader["Title"].ToString(),
                             LineOfBusiness = reader["LINE_OF_BUSINESS"].ToString(),
-                            Zip = reader["Zip"].ToString()
+                            Zip = reader["Zip"].ToString(),                          
+                            MeetingCount = (int)reader["MeetingCount"],
+                            LeadCount = (int)reader["LeadCount"] 
                         };
                     }
                 }

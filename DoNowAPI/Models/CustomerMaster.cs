@@ -11,11 +11,6 @@ namespace DoNowAPI.Models
         public long LeadId { get; set; }
         public string Name { get; set; }
         public string Company { get; set; }
-
-        //the below mentiond columns should be removed
-       
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
-
+        public int LEAD_SOURCE { get; set; }
     }
 }

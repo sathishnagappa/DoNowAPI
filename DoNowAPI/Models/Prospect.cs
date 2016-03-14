@@ -41,7 +41,8 @@ namespace DoNowAPI.Models
         public string YEARFOUNDED { get; set; }
         public string INDUSTRYRISK { get; set; }
         public string COUNTY { get; set; }
-        public string WebAddress { get; set; }
+        public string WebAddress { get; set; } 
+        public string SFDCLEAD_ID { get; set; }
 
 
         //the below mentiond columns should be removed

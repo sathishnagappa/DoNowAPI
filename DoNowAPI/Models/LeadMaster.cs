@@ -19,14 +19,6 @@ namespace DoNowAPI.Models
         public string CreatedOn { get; set; }
         public string LEAD_TYPE { get; set; }
         public string LEAD_TITLE { get; set; }
-
-        //the below mentiond columns should be removed
-       public string StartTime { get; set; }
-        public string EndTime { get; set; }
-       //public string DBEndTime { get; set; }
-       // public string APIProcessTimeAfterDB { get; set; }
-       // public string DBConnectionTime { get; set; }
-        public string AfterConnectionOpenTime { get; set; }
-        public string AfterExecutingSQLTime { get; set; }  
+        public int LEAD_SOURCE { get; set; }        
     }
 }

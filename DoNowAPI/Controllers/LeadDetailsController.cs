@@ -16,39 +16,29 @@ namespace DoNowAPI.Controllers
         [HttpGet]
         public List<LeadMaster> Get(long id)
         {
-          
-            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            long secondsSinceEpoch = (long)t.TotalMilliseconds;
-            //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-            string startTime = secondsSinceEpoch.ToString();
-            string startTime2;
-            string startTime3;
-
             List<LeadMaster> leadMasterDetails = new List<LeadMaster>();
             using (MySqlConnection connection = new MySqlConnection(MyConnnectionString))
             {
                 connection.Open();
 
-                TimeSpan t2 = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                long secondsSinceEpoch2 = (long)t2.TotalMilliseconds;
-                //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-                startTime2 = secondsSinceEpoch2.ToString();
-
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    
-                    string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
-                 + "  C.u_l_status,  C.SCORE AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.score is not null and C.u_l_status not in (6,0) and C.USER_ID=" + id + " order by u_l_status asc, C.update_ts desc ";
 
+                    string stringSQL = "(SELECT A.ID AS LEAD_ID, A.LEAD_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, "
+                                        + " A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY,  "
+                                        + " A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,  " 
+                                        + " C.u_l_status,  C.SCORE AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY, C.update_ts " 
+                                        + " FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID "
+                                        + " WHERE C.u_l_status not in (6,0) and C.USER_ID=" + id + " and u_l_status<> 3) union (SELECT A.ID AS LEAD_ID, A.LEAD_NAME, "
+                                        + " IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_NAME AS COMPANY_NAME, A.LEAD_COMP_STATE AS STATE, " 
+                                        + " A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.EXISTING_CUSTOMER AS LEAD_TYPE, "  
+                                        + " A.CREATE_TS AS LEAD_CREATE_TIME,3 as u_l_status,  0 AS LEAD_SCORE, A.LEAD_COMP_INDUSTRY AS LEAD_INDUSTRY,  "
+                                        + " A.update_ts FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID "
+                                        + " INNER JOIN user_details C ON C.Email = A.USER_EMAIL_ID WHERE C.ID=" + id + ") order by u_l_status asc, update_ts desc";
                     cmd.CommandText = stringSQL;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        TimeSpan t3 = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                        long secondsSinceEpoch3 = (long)t3.TotalMilliseconds;
-                        //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-                        startTime3 = secondsSinceEpoch3.ToString();
-
                         while (reader.Read())
                         {
                             leadMasterDetails.Add(new LeadMaster
@@ -58,13 +48,13 @@ namespace DoNowAPI.Controllers
                                 COMPANY_NAME = reader["COMPANY_NAME"].ToString(),
                                 STATE = reader["STATE"].ToString(),
                                 CITY = reader["CITY"].ToString(),
-                                LEAD_SCORE = (int)reader["LEAD_SCORE"],
-                                USER_LEAD_STATUS = (int)reader["u_l_status"],
+                                LEAD_SCORE = int.Parse(reader["LEAD_SCORE"].ToString()),
+                                USER_LEAD_STATUS = int.Parse(reader["u_l_status"].ToString()),
                                 LeadIndustry = reader["LEAD_INDUSTRY"].ToString(),
                                 CreatedOn = reader["LEAD_CREATE_TIME"].ToString(),
                                 LEAD_TYPE = reader["LEAD_TYPE"].ToString(),
-                                LEAD_TITLE = reader["LEAD_TITLE"].ToString()
-
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString(),
+                                LEAD_SOURCE = int.Parse(reader["LEAD_SOURCE"].ToString())
                             });
                         }
                     }
@@ -73,30 +63,12 @@ namespace DoNowAPI.Controllers
                 connection.Close();
             }
            
-            
-            t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            secondsSinceEpoch = (long)t.TotalMilliseconds;
-            //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-            string EndTime = secondsSinceEpoch.ToString();
-
-            if (leadMasterDetails != null)
-            {
-                leadMasterDetails[0].StartTime = startTime;
-                leadMasterDetails[0].EndTime = EndTime;
-                leadMasterDetails[0].AfterConnectionOpenTime = startTime2;
-                leadMasterDetails[0].AfterExecutingSQLTime = startTime3;
-            } 
-
             return leadMasterDetails;
 
         }
-        public Prospect Get(long LeadID, long UserID, string Type)
+        public Prospect Get(long LeadID, long UserID, string Type, int LeadSource)
         {
-            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            long secondsSinceEpoch = (long)t.TotalMilliseconds;
-            //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-            string startTime = secondsSinceEpoch.ToString();
-
+         
             Prospect prospectData = null;
 
             using (MySqlConnection connection = new MySqlConnection(MyConnnectionString))
@@ -105,18 +77,32 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                   
-                     cmd.CommandText = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE,  "
-                                + " A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.LEAD_COMP_INDUSTRY AS "
-                                + " INDUSTRY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME, "
-                                + " A.STATUS, IFNULL(A.REASON_FOR_PASS,'') AS REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS "
-                                + " EMAILID, C.u_l_status, C.USER_ID, B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE, IFNULL(A.LEAD_COMP_ADDRESS,'') AS "
-                                + " LEAD_COMP_ADDRESS , IFNULL(A.LEAD_COMP_ZIPCODE,'') AS LEAD_COMP_ZIPCODE, IFNULL(A.LEAD_COMP_COUNTRY,'') AS LEAD_COMP_COUNTRY, "
-                                + " IFNULL(A.Fiscal_Year_End,'') AS FiscalYE, IFNULL(A.Annual_Revenue,'') AS Revenue, IFNULL(A.Net_income,'') AS NetIncome, "
-                                + " IFNULL(A.Number_of_Employee,'') AS Employees, IFNULL(A.Market_Value,'') AS MarketValue, IFNULL(A.Year_Of_Founding,'') AS "
-                                + " YearFounded, IFNULL(A.DBPreScreen_Score,'') AS IndustryRiskScore, IFNULL(A.Lead_Comp_County,'') AS County, "
-                                + " IFNULL(A.Web_Address,'') AS WebAddress  FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID "
-                                + " INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID WHERE C.u_l_status <> 6 and C.LEAD_ID= " + LeadID + " and C.USER_ID = " + UserID;
+
+                    if (LeadSource == 1)
+                    {
+                        cmd.CommandText = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE,  "
+                                   + " A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.LEAD_COMP_INDUSTRY AS "
+                                   + " INDUSTRY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME, "
+                                   + " A.STATUS, IFNULL(A.REASON_FOR_PASS,'') AS REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS "
+                                   + " EMAILID, C.u_l_status, C.USER_ID, B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE, IFNULL(A.LEAD_COMP_ADDRESS,'') AS "
+                                   + " LEAD_COMP_ADDRESS , IFNULL(A.LEAD_COMP_ZIPCODE,'') AS LEAD_COMP_ZIPCODE, IFNULL(A.LEAD_COMP_COUNTRY,'') AS LEAD_COMP_COUNTRY, "
+                                   + " IFNULL(A.Fiscal_Year_End,'') AS FiscalYE, IFNULL(A.Annual_Revenue,'') AS Revenue, IFNULL(A.Net_income,'') AS NetIncome, "
+                                   + " IFNULL(A.Number_of_Employee,'') AS Employees, IFNULL(A.Market_Value,'') AS MarketValue, IFNULL(A.Year_Of_Founding,'') AS "
+                                   + " YearFounded, IFNULL(A.DBPreScreen_Score,'') AS IndustryRiskScore, IFNULL(A.Lead_Comp_County,'') AS County, "
+                                   + " IFNULL(A.Web_Address,'') AS WebAddress, IFNULL(SFDC_ID,0) AS SFDCLEAD_ID    FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID "
+                                   + " INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID WHERE C.u_l_status <> 6 and C.LEAD_ID= " + LeadID + " and C.USER_ID = " + UserID;
+                    }
+                    else {
+                        cmd.CommandText = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE,A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, "
+                                            + " A.LEAD_COMP_INDUSTRY AS INDUSTRY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME, "
+                                            + " A.STATUS, IFNULL(A.REASON_FOR_PASS,'') AS REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS EMAILID, 4 as u_l_status, "
+                                            + " C.ID AS USER_ID, B.LEAD_STATUS_C AS LEAD_STATUS, 0 AS LEAD_SCORE, IFNULL(A.LEAD_COMP_ADDRESS,'') AS LEAD_COMP_ADDRESS , IFNULL(A.LEAD_COMP_ZIPCODE,'') AS LEAD_COMP_ZIPCODE,"
+                                            + " IFNULL(A.LEAD_COMP_COUNTRY,'') AS LEAD_COMP_COUNTRY,IFNULL(A.Fiscal_Year_End,'') AS FiscalYE, IFNULL(A.Annual_Revenue,'') AS Revenue, IFNULL(A.Net_income,'') AS NetIncome,"
+                                            + " IFNULL(A.Number_of_Employee,'') AS Employees, IFNULL(A.Market_Value,'') AS MarketValue, IFNULL(A.Year_Of_Founding,'') AS YearFounded, "
+                                            + " IFNULL(A.DBPreScreen_Score,'') AS IndustryRiskScore, IFNULL(A.Lead_Comp_County,'') AS County,IFNULL(A.Web_Address,'') AS WebAddress  "
+                                            + " , IFNULL(SFDC_ID,0) AS SFDCLEAD_ID  FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID INNER JOIN user_details C ON A.User_EMail_ID = C.Email  WHERE A.ID=" + LeadID + "  and  C.ID = " + UserID;
+                            }
+
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -128,18 +114,18 @@ namespace DoNowAPI.Controllers
                                 COMPANY_NAME = reader["COMPANY_NAME"].ToString(),
                                 STATE = reader["STATE"].ToString(),
                                 CITY = reader["CITY"].ToString(),
-                                LEAD_SOURCE = (int)reader["LEAD_SOURCE"],
+                                LEAD_SOURCE = int.Parse(reader["LEAD_SOURCE"].ToString()),
                                 INDUSTRY_INFO = reader["INDUSTRY_INFO"].ToString(),
                                 BUSINESS_NEED = reader["BUSINESS_NEED"].ToString(),
                                 LEAD_TYPE = reader["LEAD_TYPE"].ToString(),
                                 LEAD_CREATE_TIME = reader["LEAD_CREATE_TIME"].ToString(),
                                 LEAD_STATUS = reader["LEAD_STATUS"].ToString(),
-                                LEAD_SCORE = (int)reader["LEAD_SCORE"],
+                                LEAD_SCORE = int.Parse(reader["LEAD_SCORE"].ToString()),
                                 STATUS = reader["STATUS"].ToString(),
                                 REASON_FOR_PASS = reader["REASON_FOR_PASS"].ToString(),
                                 PHONE = reader["PHONE"].ToString(),
                                 EMAILID = reader["EMAILID"].ToString(),
-                                USER_LEAD_STATUS = (int)reader["u_l_status"],
+                                USER_LEAD_STATUS = int.Parse(reader["u_l_status"].ToString()),
                                 USER_ID = long.Parse(reader["USER_ID"].ToString()),
                                 LEAD_TITLE = reader["LEAD_TITLE"].ToString(),
                                 ADDRESS = reader["LEAD_COMP_ADDRESS"].ToString(),
@@ -153,7 +139,8 @@ namespace DoNowAPI.Controllers
                                 YEARFOUNDED = reader["YearFounded"].ToString(),
                                 INDUSTRYRISK = reader["IndustryRiskScore"].ToString(),
                                 COUNTY = reader["County"].ToString(),
-                                WebAddress = reader["WebAddress"].ToString()
+                                WebAddress = reader["WebAddress"].ToString(),
+                                SFDCLEAD_ID = reader["SFDCLEAD_ID"].ToString()
                             };
 
                         }
@@ -260,123 +247,40 @@ namespace DoNowAPI.Controllers
                 }
                 connection.Close();
             }
-
-            t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            secondsSinceEpoch = (long)t.TotalMilliseconds;
-            //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-            string EndTime = secondsSinceEpoch.ToString();
-
-            if (prospectData != null)
-            {
-                prospectData.StartTime = startTime;
-                prospectData.EndTime = EndTime;
-         
-            }
-
+            
             return prospectData;
         }
         
-        //This method is forr testing - It should be removed
-        public List<LeadMaster> Get(long id, bool temp)
-                {
-                    string DBEndTime = "";
-                    TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                    long secondsSinceEpoch = (long)t.TotalMilliseconds;
-
-                    string startTime = secondsSinceEpoch.ToString();
-                    string ConnectionString = System.Configuration.ConfigurationManager.AppSettings["DoNowConnectionString"];
-                    /*ontextFactoryDAO 
-                   MySqlConnection connection = new MySqlConnection();
-                     Utility.ContextFactoryDAO.opensqlcon(connection);*/
-       string EndTimecon = "";
-          
-            List<LeadMaster> leadMasterDetails = new List<LeadMaster>();
-            using (MySqlConnection connection = new MySqlConnection(ConnectionString))
-            {
-                connection.Open();
-                TimeSpan tcon = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                long secondsSinceEpochcon = (long)tcon.TotalMilliseconds;
-                //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-                 EndTimecon = secondsSinceEpochcon.ToString();
-
-              
-                using (MySqlCommand cmd = connection.CreateCommand())
-                {
-                
-
-                    string stringSQL = "DoNow_GetLeads";
-
-
-                    cmd.CommandText = stringSQL;
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@UserID", id);
-
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        TimeSpan t2 = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                        long secondsSinceEpoch2 = (long)t2.TotalMilliseconds;
-                        //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-                        DBEndTime = secondsSinceEpoch2.ToString();
-
-                        while (reader.Read())
-                        {
-                            leadMasterDetails.Add(new LeadMaster
-                            {
-                                LEAD_ID = long.Parse(reader["LEAD_ID"].ToString()),
-                                LEAD_NAME = reader["LEAD_NAME"].ToString(),
-                                COMPANY_NAME = reader["COMPANY_NAME"].ToString(),
-                                STATE = reader["STATE"].ToString(),
-                                CITY = reader["CITY"].ToString(),
-                                LEAD_SCORE = (int)reader["LEAD_SCORE"],
-                                USER_LEAD_STATUS = (int)reader["u_l_status"]
-
-                            });
-                        }
-                    }
-                }
-            }
-                
-             
-
-              t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-              secondsSinceEpoch = (long)t.TotalMilliseconds;
-              //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-              string EndTime = secondsSinceEpoch.ToString();
-
-              if (leadMasterDetails != null)
-              {
-                  leadMasterDetails[0].StartTime = startTime;
-                  leadMasterDetails[0].EndTime = EndTime;
-                         }  
-
-              return leadMasterDetails;
-
-          }
         
-          // GET api/values/5
-          //User id will be sent in the argument. find the lead from mapping - donow_scoring_e
-          public LeadDetails Get(long id,long userid)       
-          {
-            LeadDetails leadDetails = null;
-            string DBEndTime = "";
-            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            long secondsSinceEpoch = (long)t.TotalMilliseconds;
-            string EndTimecon = "";
-            string startTime = secondsSinceEpoch.ToString();
+
+        // GET api/values/5
+        //User id will be sent in the argument. find the lead from mapping - donow_scoring_e
+        public LeadDetails Get(long id, long userid, int LeadSource)
+        {
+            LeadDetails leadDetails = null;           
 
             using (MySqlConnection connection = new MySqlConnection(MyConnnectionString))
             {
                 connection.Open();
-                TimeSpan tcon = DateTime.UtcNow - new DateTime(1970, 1, 1);
-                long secondsSinceEpochcon = (long)tcon.TotalMilliseconds;
-                //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-                EndTimecon = secondsSinceEpochcon.ToString();
+                
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    string stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.Company_info AS COMPANY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
-                   + " A.STATUS, A.REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS EMAILID, C.u_l_status, C.USER_ID, "
-                   + " B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status <> 6 and C.LEAD_ID= " + id + " and C.USER_ID = " + userid + " order by u_l_status asc, C.SCORE desc ";
+                    string stringSQL;
+                    if (LeadSource == 1)
+                    {
+                        stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_STATE AS STATE, A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.Company_info AS COMPANY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,"
+                       + " A.STATUS, A.REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE,A.LEAD_COMP_EMAIL_ID AS EMAILID, C.u_l_status, C.USER_ID, "
+                       + " B.LEAD_STATUS_C AS LEAD_STATUS, C.SCORE AS LEAD_SCORE,IFNULL(SFDC_ID,0) AS SFDCLEAD_ID FROM dn_lead_det_e A  INNER JOIN dn_lead_e B ON A.ID = B.ID  INNER JOIN dn_scoring_e C ON A.ID = C.LEAD_ID  WHERE C.u_l_status <> 6 and C.LEAD_ID= " + id + " and C.USER_ID = " + userid;
+                    }
+                    else
+                    {
+                        stringSQL = "SELECT A.ID AS LEAD_ID, A.LEAD_NAME, A.LEAD_COMP_NAME AS COMPANY_NAME, IFNULL(A.LEAD_TITLE,'') as LEAD_TITLE, A.LEAD_COMP_STATE AS STATE, " 
+                                    + " A.LEAD_COMP_CITY AS CITY, A.LEAD_SRC_SYS_ID AS LEAD_SOURCE, A.Company_info AS COMPANY_INFO,A.LINE_OF_BUSINESS AS BUSINESS_NEED, "
+                                    + " A.EXISTING_CUSTOMER AS LEAD_TYPE, A.CREATE_TS AS LEAD_CREATE_TIME,A.STATUS, A.REASON_FOR_PASS, A.LEAD_COMP_PHONE_NO_1 AS PHONE, " 
+                                    + " A.LEAD_COMP_EMAIL_ID AS EMAILID, 4 as u_l_status, C.ID,B.LEAD_STATUS_C AS LEAD_STATUS, 0 AS LEAD_SCORE, IFNULL(SFDC_ID,0) AS SFDCLEAD_ID FROM dn_lead_det_e A  "
+                                    + " INNER JOIN dn_lead_e B ON A.ID = B.ID INNER JOIN user_details C ON A.User_EMail_ID = C.Email  WHERE A.ID=" + id + "  and  C.ID = " + userid;
+                    }
+
                     cmd.CommandText = stringSQL;
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -395,41 +299,28 @@ namespace DoNowAPI.Controllers
                                 COMPANY_NAME = reader["COMPANY_NAME"].ToString(),
                                 STATE = reader["STATE"].ToString(),
                                 CITY = reader["CITY"].ToString(),
-                                LEAD_SOURCE = (int)reader["LEAD_SOURCE"],
+                                LEAD_SOURCE = int.Parse(reader["LEAD_SOURCE"].ToString()),
                                 COMPANY_INFO = reader["COMPANY_INFO"].ToString(),
                                 BUSINESS_NEED = reader["BUSINESS_NEED"].ToString(),
                                 LEAD_TYPE = reader["LEAD_TYPE"].ToString(),
                                 LEAD_CREATE_TIME = reader["LEAD_CREATE_TIME"].ToString(),
                                 LEAD_STATUS = reader["LEAD_STATUS"].ToString(),
-                                LEAD_SCORE = (int)reader["LEAD_SCORE"],
+                                LEAD_SCORE = int.Parse(reader["LEAD_SCORE"].ToString()),
                                 STATUS = reader["STATUS"].ToString(),
                                 REASON_FOR_PASS = Reason,
                                 PHONE = reader["PHONE"].ToString(),
                                 EMAILID = reader["EMAILID"].ToString(),
                                 USER_LEAD_STATUS = long.Parse(reader["u_l_status"].ToString()),
-                                USER_ID = long.Parse(reader["USER_ID"].ToString()),
-                                LEAD_TITLE = reader["LEAD_TITLE"].ToString()
+                                USER_ID = userid,
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString(),
+                                SFDCLEAD_ID = reader["SFDCLEAD_ID"].ToString()
                             };
                         }
                     }
                 }
                 connection.Close();
 
-            }
-
-            t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            secondsSinceEpoch = (long)t.TotalMilliseconds;
-            //string startTime = DateTime.Now.ToString() + " Milli" + DateTime.Now.Millisecond.ToString();
-            string EndTime = secondsSinceEpoch.ToString();
-
-            if (leadDetails != null)
-            {
-                leadDetails.StartTime = startTime;
-                leadDetails.EndTime = EndTime;
-                leadDetails.DBEndTime = DBEndTime;
-               
-            }
-
+            }            
 
             return leadDetails;
 
@@ -461,12 +352,13 @@ namespace DoNowAPI.Controllers
                                 COMPANY_NAME = reader["COMPANY_NAME"].ToString(),
                                 STATE = reader["STATE"].ToString(),
                                 CITY = reader["CITY"].ToString(),
-                                LEAD_SCORE = (int)reader["LEAD_SCORE"],
-                                USER_LEAD_STATUS = (int)reader["u_l_status"],
+                                LEAD_SCORE = int.Parse(reader["LEAD_SCORE"].ToString()),
+                                USER_LEAD_STATUS = int.Parse(reader["u_l_status"].ToString()),
                                 LeadIndustry = reader["LEAD_INDUSTRY"].ToString(),
                                 CreatedOn = reader["LEAD_CREATE_TIME"].ToString(),
                                 LEAD_TYPE = reader["LEAD_TYPE"].ToString(),
-                                LEAD_TITLE = reader["LEAD_TITLE"].ToString()
+                                LEAD_TITLE = reader["LEAD_TITLE"].ToString(),
+                                LEAD_SOURCE = int.Parse(reader["LEAD_SOURCE"].ToString())
 
                             });
                         }

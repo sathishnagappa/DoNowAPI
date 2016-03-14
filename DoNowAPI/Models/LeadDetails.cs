@@ -44,12 +44,8 @@ namespace DoNowAPI.Models
         public long USER_LEAD_STATUS { get; set; }
         public long USER_ID { get; set; }
         public string LEAD_TITLE { get; set; }
+        public string SFDCLEAD_ID { get; set; }
 
-        //the below mentiond columns should be removed
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
-        public string DBEndTime { get; set; }
-       
     }
 
     public class LeadInfoDetails
