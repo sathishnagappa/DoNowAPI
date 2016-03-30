@@ -21,7 +21,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT Lead_ID, IFNULL(Points,'') as Points FROM donow.lead_talking_points";
+                    cmd.CommandText = "SELECT Lead_ID, IFNULL(Points,'') as Points FROM lead_talking_points";
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -51,7 +51,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "INSERT INTO donow.lead_talking_points values(@Lead_ID,@Points)";
+                    cmd.CommandText = "INSERT INTO lead_talking_points values(@Lead_ID,@Points)";
                     cmd.Parameters.AddWithValue("@Lead_ID", value.LeadId);
                     cmd.Parameters.AddWithValue("@Points", value.Points);
                     cmd.ExecuteNonQuery();

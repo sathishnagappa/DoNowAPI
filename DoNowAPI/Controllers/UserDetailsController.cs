@@ -21,7 +21,7 @@ namespace DoNowAPI.Controllers
                 connection.Open();
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT * FROM donow.user_details";
+                    cmd.CommandText = "SELECT * FROM user_details";
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -44,7 +44,7 @@ namespace DoNowAPI.Controllers
                                 Name = reader["User_Name"].ToString(),
                                 OfficeAddress = reader["Office_Address"].ToString(),
                                 Password = reader["Password"].ToString(),
-                                Phone = reader["Office_Address"].ToString(),
+                                Phone = reader["Phone"].ToString(),
                                 PreferredCompany = reader["Preferred_Company"].ToString(),
                                 PreferredCustomers = reader["Preferred_Customers"].ToString(),
                                 PreferredIndustry = reader["Preferred_Industry"].ToString(),
@@ -74,7 +74,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    //cmd.CommandText = "SELECT * FROM donow.user_details where Email='" + EmailID.ToString() + "'";
+                    
                     string stringSQL = "dn_GetUserByEmail";
                     cmd.CommandText = stringSQL;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -101,7 +101,7 @@ namespace DoNowAPI.Controllers
                             Name = reader["User_Name"].ToString(),
                             OfficeAddress = reader["Office_Address"].ToString(),
                             Password = reader["Password"].ToString(),
-                            Phone = reader["Office_Address"].ToString(),
+                            Phone = reader["Phone"].ToString(),
                             PreferredCompany = reader["Preferred_Company"].ToString(),
                             PreferredCustomers = reader["Preferred_Customers"].ToString(),
                             PreferredIndustry = reader["Preferred_Industry"].ToString(),
@@ -129,7 +129,7 @@ namespace DoNowAPI.Controllers
                 connection.Open();
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT * FROM donow.user_details where ID =" + id.ToString();
+                    cmd.CommandText = "SELECT * FROM user_details where ID =" + id.ToString();
 
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -152,7 +152,7 @@ namespace DoNowAPI.Controllers
                             Name = reader["User_Name"].ToString(),
                             OfficeAddress = reader["Office_Address"].ToString(),
                             Password = reader["Password"].ToString(),
-                            Phone = reader["Office_Address"].ToString(),
+                            Phone = reader["Phone"].ToString(),
                             PreferredCompany = reader["Preferred_Company"].ToString(),
                             PreferredCustomers = reader["Preferred_Customers"].ToString(),
                             PreferredIndustry = reader["Preferred_Industry"].ToString(),
@@ -192,7 +192,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    //cmd.CommandText = "SELECT * FROM donow.user_details where User_Name ='" + name + "'";
+                    
                     string stringSQL = "dn_GetUserByName";
                     cmd.CommandText = stringSQL;
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -224,7 +224,7 @@ namespace DoNowAPI.Controllers
                             Name = reader["User_Name"].ToString(),
                             OfficeAddress = reader["Office_Address"].ToString(),
                             Password = reader["Password"].ToString(),
-                            Phone = reader["Office_Address"].ToString(),
+                            Phone = reader["Phone"].ToString(),
                             PreferredCompany = reader["Preferred_Company"].ToString(),
                             PreferredCustomers = reader["Preferred_Customers"].ToString(),
                             PreferredIndustry = reader["Preferred_Industry"].ToString(),
@@ -265,7 +265,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT count(*) FROM donow.user_details where User_Name ='" + username + "'";
+                    cmd.CommandText = "SELECT count(*) FROM user_details where User_Name ='" + username + "'";
 
                 result=(long.Parse(cmd.ExecuteScalar().ToString()) > 0 ? true : false);
                 }
@@ -287,10 +287,10 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {  
-                    cmd.CommandText = "SELECT IFNULL(max(ID),0) FROM donow.user_details";
+                    cmd.CommandText = "SELECT IFNULL(max(ID),0) FROM user_details";
                     ID = long.Parse(cmd.ExecuteScalar().ToString()) + 1;
 
-                    cmd.CommandText = "INSERT INTO donow.user_details VALUES (@ID,@User_Name,@Password,@Full_Name,@Title,@Company,@Industry,@Office_Address,@City,@State,@Zip,@Phone,@Email,@LINE_OF_BUSINESS,@Preferred_Industry,@Preferred_Company,@Preferred_Customers,@IsNewleadNotificationRequired,@IsReferrelRequestRequired,@IsCustomerFollowUpRequired,@IsMeetingRemindersRequired,@IsBusinessUpdatesRequired,@ImageURL)";
+                    cmd.CommandText = "INSERT INTO user_details VALUES (@ID,@User_Name,@Password,@Full_Name,@Title,@Company,@Industry,@Office_Address,@City,@State,@Zip,@Phone,@Email,@LINE_OF_BUSINESS,@Preferred_Industry,@Preferred_Company,@Preferred_Customers,@IsNewleadNotificationRequired,@IsReferrelRequestRequired,@IsCustomerFollowUpRequired,@IsMeetingRemindersRequired,@IsBusinessUpdatesRequired,@ImageURL)";
 
                     cmd.Parameters.AddWithValue("@ID", int.Parse(ID.ToString()));
                     cmd.Parameters.AddWithValue("@User_Name", value.Name);

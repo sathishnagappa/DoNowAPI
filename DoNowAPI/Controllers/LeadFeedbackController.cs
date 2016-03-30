@@ -25,7 +25,7 @@ namespace DoNowAPI.Controllers
                     string stringSQL;
                     stringSQL = "SELECT LeadID, UserID, MeetingID, IFNULL(InteractionFeedBack,'') AS InteractionFeedBack, IFNULL(ReasonForDown,'') AS ReasonForDown, "
                                     + " IFNULL(CustomerAcknowledged,'') AS CustomerAcknowledged, IFNULL(Comments,'') AS Comments, "
-                                    + " IFNULL(SalesStage,'') AS SalesStage FROM donow.lead_feedback where LeadId =" + id;
+                                    + " IFNULL(SalesStage,'') AS SalesStage FROM lead_feedback where LeadId =" + id;
 
                     cmd.CommandText = stringSQL;
 
@@ -69,10 +69,10 @@ namespace DoNowAPI.Controllers
                 cmd.ExecuteNonQuery();
 
                 
-                cmd.CommandText = "select IFNULL(max(ID),0) from donow.lead_feedback";
+                cmd.CommandText = "select IFNULL(max(ID),0) from lead_feedback";
                 refID = long.Parse(cmd.ExecuteScalar().ToString()) + 1;
               
-                cmd.CommandText = "INSERT INTO donow.lead_feedback values(@LeadID, @UserID, @InteractionFeedBack, @ReasonForDown,@CustomerAcknowledged, @Comments,@ID, @MeetingID,@SalesStage)"; 
+                cmd.CommandText = "INSERT INTO lead_feedback values(@LeadID, @UserID, @InteractionFeedBack, @ReasonForDown,@CustomerAcknowledged, @Comments,@ID, @MeetingID,@SalesStage)"; 
                 cmd.Parameters.AddWithValue("@ID", refID);
                 cmd.Parameters.AddWithValue("@LeadID", value.LeadId);
                 cmd.Parameters.AddWithValue("@UserID", value.UserID);

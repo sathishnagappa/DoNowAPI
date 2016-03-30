@@ -27,7 +27,7 @@ namespace DoNowAPI.Controllers
 
                 using(MySqlCommand cmd = connection.CreateCommand())
                 {   string stringSQL;
-                    stringSQL = "SELECT LeadID,Date, UserID,BrokerID, IFNULL(Lead_City, '') as City,IFNULL(Lead_State, '') as State,IFNULL(Lead_Industry, '') as Lead_Industry,IFNULL(CustomerName, '') as CustomerName FROM donow.Deal_History where LeadID =" + LeadID + " and UserID =" + UserID;
+                    stringSQL = "SELECT LeadID,Date, UserID,BrokerID, IFNULL(Lead_City, '') as City,IFNULL(Lead_State, '') as State,IFNULL(Lead_Industry, '') as Lead_Industry,IFNULL(CustomerName, '') as CustomerName FROM Deal_History where LeadID =" + LeadID + " and UserID =" + UserID;
 
                     cmd.CommandText = stringSQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -68,7 +68,7 @@ namespace DoNowAPI.Controllers
 
                     long BrokerID = long.Parse(cmd.ExecuteScalar().ToString());
 
-                    cmd.CommandText = "INSERT INTO donow.Deal_History values(@LeadID, @UserID, @BrokerID, @Date,@Lead_City, @Lead_State,@Lead_Industry,@CustomerName)";
+                    cmd.CommandText = "INSERT INTO Deal_History values(@LeadID, @UserID, @BrokerID, @Date,@Lead_City, @Lead_State,@Lead_Industry,@CustomerName)";
                     cmd.Parameters.AddWithValue("@LeadID", value.LeadId);
                     cmd.Parameters.AddWithValue("@UserID", value.UserId);
                     cmd.Parameters.AddWithValue("@BrokerID", BrokerID);

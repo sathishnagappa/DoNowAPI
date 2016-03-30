@@ -71,7 +71,7 @@ namespace DoNowAPI.Controllers
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
 
-                    cmd.CommandText = "select IFNULL(max(ID),1) from donow.referral_requests";
+                    cmd.CommandText = "select IFNULL(max(ID),1) from referral_requests";
                     var temp = cmd.ExecuteScalar();
 
                     if (temp == null)
@@ -201,11 +201,11 @@ namespace DoNowAPI.Controllers
                 connection.Open();
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "select IFNULL(max(ID),0) from donow.referral_requests";
+                    cmd.CommandText = "select IFNULL(max(ID),0) from referral_requests";
                     
                     ReferralId = long.Parse(cmd.ExecuteScalar().ToString())+1;
               
-                    cmd.CommandText = "INSERT INTO donow.referral_requests values(@ID, @SellerName, @Status, @CompanyInfo, @LeadEmailID, @CreatedOn, @BrokerUserID, @BrokerID, @LeadID, @SellerUserID, @City, @BusinessNeeds, @Industry, @Prospect, @CompanyName,@State)";
+                    cmd.CommandText = "INSERT INTO referral_requests values(@ID, @SellerName, @Status, @CompanyInfo, @LeadEmailID, @CreatedOn, @BrokerUserID, @BrokerID, @LeadID, @SellerUserID, @City, @BusinessNeeds, @Industry, @Prospect, @CompanyName,@State)";
                     cmd.Parameters.AddWithValue("@ID", ReferralId);
                     cmd.Parameters.AddWithValue("@SellerName", value.SellerName);
                     cmd.Parameters.AddWithValue("@Status", value.Status);

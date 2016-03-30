@@ -10,7 +10,7 @@ namespace DoNowAPI.Controllers
     {
         private string MyConnnectionString = ConfigurationManager.AppSettings["DoNowConnectionString"];
         [HttpGet]
-        public SFDC Get(long Id)
+        public SFDC Get(string DomainName)
         {
             SFDC SFDCDetails = null;
             using(MySqlConnection connection = new MySqlConnection(MyConnnectionString))
@@ -19,7 +19,9 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT UserID,IFNULL(Url, '') As Url, IFNULL(UserName,'') as UserName,IFNULL(Password, '') As Password, IFNULL(SecurityCode,'') as SecurityCode,IFNULL(ClientID, '') as ClientID,IFNULL(ClientSecret, '') as ClientSecret FROM User_SFDCCredentials U where UserID =" + Id;
+                    cmd.CommandText = "SELECT U.DomainName,IFNULL(Url, '') As Url, IFNULL(UserName,'') as UserName,IFNULL(Password, '') As Password, " 
+                                        + " IFNULL(SecurityCode,'') as SecurityCode,IFNULL(ClientID, '') as ClientID, "
+                                        + " IFNULL(ClientSecret, '') as ClientSecret FROM User_SFDCCredentials U where U.DomainName ='" + DomainName + "'";
 
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -27,7 +29,7 @@ namespace DoNowAPI.Controllers
                     {
                         SFDCDetails = new SFDC
                         {
-                            UserID = long.Parse(reader["UserID"].ToString()),
+                            DomainName = reader["DomainName"].ToString(),
                             Url = reader["Url"].ToString(),
                             UserName = reader["UserName"].ToString(),
                             Password = reader["Password"].ToString(),

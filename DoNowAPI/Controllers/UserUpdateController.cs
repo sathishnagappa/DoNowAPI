@@ -22,7 +22,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    stringSQL = "Update donow.user_details set User_Name = '" + value.Name + "', "
+                    stringSQL = "Update user_details set User_Name = '" + value.Name + "', "
                             + " Password = '" + value.Password + "',"
                             + " Full_Name = '" + value.FullName + "',"
                             + "Title ='" + value.Title + "',"

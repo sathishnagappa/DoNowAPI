@@ -308,7 +308,7 @@ namespace DoNowAPI.Controllers
                 connection.Open();
                 using(MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    stringSQL = "Update donow.dn_broker_scoring_e set Broker_Status =" + value.Status + " where LEAD_ID=" + value.LeadID + " and BROKER_ID=" + value.BrokerID;
+                    stringSQL = "Update dn_broker_scoring_e set Broker_Status =" + value.Status + " where LEAD_ID=" + value.LeadID + " and BROKER_ID=" + value.BrokerID;
                     cmd.CommandText = stringSQL;
                     result = cmd.ExecuteNonQuery();
                 }

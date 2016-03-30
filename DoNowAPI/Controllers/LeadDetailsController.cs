@@ -149,7 +149,7 @@ namespace DoNowAPI.Controllers
                     string SQL;
                     List<CustomerInteractions> customerInteractions = new List<CustomerInteractions>();
                     SQL = "SELECT USERID,IFNULL(CustomerName,'') AS CustomerName, IFNULL(Type,'') AS Type, IFNULL(DateNTime,'') AS DateNTime, leadID "
-            + " FROM donow.Customer_Interactions where leadID =" + LeadID + " and UserID=" + UserID;
+            + " FROM Customer_Interactions where leadID =" + LeadID + " and UserID=" + UserID;
                     cmd.CommandText = SQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -171,7 +171,7 @@ namespace DoNowAPI.Controllers
                     //MeetingList 
 
                     List<MeetingList> meetingDetails = new List<MeetingList>();
-                    SQL = "SELECT * FROM donow.ui_meetinglist where LeadID = " + LeadID + " and UserID=" + UserID;
+                    SQL = "SELECT * FROM ui_meetinglist where LeadID = " + LeadID + " and UserID=" + UserID;
                     cmd.CommandText = SQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {

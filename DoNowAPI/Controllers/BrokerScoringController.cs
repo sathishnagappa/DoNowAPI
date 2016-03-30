@@ -10,8 +10,8 @@ namespace DoNowAPI.Controllers
 {
     public class BrokerScoringController : ApiController  
     {
-        private string apiKey = ConfigurationManager.AppSettings["AzureMLApiKey"];
-        private string BaseAddress = ConfigurationManager.AppSettings["AzureMLBaseAddress"]; 
+        private string apiKey = ConfigurationManager.AppSettings["AzureMLApiKey_Broker"];
+        private string BaseAddress = ConfigurationManager.AppSettings["AzureMLBaseAddress_Broker"]; 
        
         public async Task<string> Post()
         {

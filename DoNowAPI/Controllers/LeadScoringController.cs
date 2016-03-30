@@ -12,8 +12,8 @@ namespace DoNowAPI.Controllers
     public class LeadScoringController : ApiController
     {
         
-        private string apiKey = ConfigurationManager.AppSettings["AzureMLApiKey"];
-        private string BaseAddress = ConfigurationManager.AppSettings["AzureMLBaseAddress"];
+        private string apiKey = ConfigurationManager.AppSettings["AzureMLApiKey_Lead"];
+        private string BaseAddress = ConfigurationManager.AppSettings["AzureMLBaseAddress_Lead"];
         public class StringTable
           {
               public string[] ColumnNames { get; set; }

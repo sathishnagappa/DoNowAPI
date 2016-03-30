@@ -22,7 +22,7 @@ namespace DoNowAPI.Controllers
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
                     stringSQL = "SELECT USERID,IFNULL(CustomerName,'') AS CustomerName, IFNULL(Type,'') AS Type, DateNTime "
-                       + " FROM donow.Customer_Interactions where CustomerName ='" + CustomerName + "' and UserID=" + UserID;
+                       + " FROM Customer_Interactions where CustomerName ='" + CustomerName + "' and UserID=" + UserID;
                     cmd.CommandText = stringSQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -57,7 +57,7 @@ namespace DoNowAPI.Controllers
                 connection.Open();
                 using (MySqlCommand cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = "INSERT INTO donow.Customer_Interactions values(@USERID,@CustomerName,@Type,@DateNTime,@leadID)";
+                    cmd.CommandText = "INSERT INTO Customer_Interactions values(@USERID,@CustomerName,@Type,@DateNTime,@leadID)";
                     cmd.Parameters.AddWithValue("@UserID", value.UserId);
                     cmd.Parameters.AddWithValue("@CustomerName", value.CustomerName);
                     cmd.Parameters.AddWithValue("@Type", value.Type);

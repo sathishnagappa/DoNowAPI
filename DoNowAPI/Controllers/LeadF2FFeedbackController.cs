@@ -24,7 +24,7 @@ namespace DoNowAPI.Controllers
                     stringSQL = " SELECT LeadID,USERID,MeetingID, IFNULL(ConfirmMeeting,'') AS ConfirmMeeting, IFNULL(ReasonForDown,'') AS ReasonForDown, "
                                    + " IFNULL(MeetingInfoHelpFull,'') AS MeetingInfoHelpFull,  IFNULL(LeadAdvanced,'') AS LeadAdvanced, "
                                    + " IFNULL(CustomerCategorization,'') AS CustomerCategorization, IFNULL(SalesStage,'') AS SalesStage, "
-                                   + " IFNULL(NextSteps,'') AS NextSteps FROM donow.lead_f2f_feedback  where LeadID =" + id;
+                                   + " IFNULL(NextSteps,'') AS NextSteps FROM lead_f2f_feedback  where LeadID =" + id;
 
 
                     cmd.CommandText = stringSQL;
@@ -69,11 +69,11 @@ namespace DoNowAPI.Controllers
                     cmd.CommandText = "UPDATE dn_lead_e Set LEAD_STATUS_C = '" + value.SalesStage + "' where ID=" + value.LeadId;
                     cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = "select IFNULL(max(ID),0) from donow.lead_f2f_feedback ";
+                    cmd.CommandText = "select IFNULL(max(ID),0) from lead_f2f_feedback ";
                     refID = long.Parse(cmd.ExecuteScalar().ToString()) + 1;
 
 
-                    cmd.CommandText = "INSERT INTO donow.lead_f2f_feedback values(@LeadID, @UserID, @ConfirmMeeting, @ReasonForDown,@MeetingInfoHelpFull, @LeadAdvanced,@CustomerCategorization,@SalesStage,@NextSteps,@ID,@MeetingID)";
+                    cmd.CommandText = "INSERT INTO lead_f2f_feedback values(@LeadID, @UserID, @ConfirmMeeting, @ReasonForDown,@MeetingInfoHelpFull, @LeadAdvanced,@CustomerCategorization,@SalesStage,@NextSteps,@ID,@MeetingID)";
                     cmd.Parameters.AddWithValue("@ID", refID);
                     cmd.Parameters.AddWithValue("@LeadID", value.LeadId);
                     cmd.Parameters.AddWithValue("@UserID", value.UserID);

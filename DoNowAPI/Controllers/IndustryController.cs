@@ -20,7 +20,7 @@ namespace DoNowAPI.Controllers
 
                 using (MySqlCommand cmd = connection.CreateCommand())
                 { 
-                    cmd.CommandText = "SELECT IFNULL(IndustryName,'') as IndustryName FROM donow.ui_industry";
+                    cmd.CommandText = "SELECT IFNULL(IndustryName,'') as IndustryName FROM ui_industry";
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {

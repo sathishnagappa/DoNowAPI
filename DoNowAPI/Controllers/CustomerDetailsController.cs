@@ -89,7 +89,7 @@ namespace DoNowAPI.Controllers
                     string SQL;
                     List<CustomerInteractions> customerInteractions = new List<CustomerInteractions>();
                     SQL = "SELECT USERID,IFNULL(CustomerName,'') AS CustomerName, IFNULL(Type,'') AS Type, IFNULL(DateNTime,'') AS DateNTime, leadID "
-            + " FROM donow.Customer_Interactions where CustomerName ='" + customerData.Name + "' and UserID=" + UserID;
+            + " FROM Customer_Interactions where CustomerName ='" + customerData.Name + "' and UserID=" + UserID;
                     cmd.CommandText = SQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -111,7 +111,7 @@ namespace DoNowAPI.Controllers
                     //MeetingList 
 
                     List<MeetingList> meetingDetails = new List<MeetingList>();
-                    SQL = "SELECT * FROM donow.ui_meetinglist where CustomerName = '" + customerData.Name + "' and UserID=" + UserID;
+                    SQL = "SELECT * FROM ui_meetinglist where CustomerName = '" + customerData.Name + "' and UserID=" + UserID;
                     cmd.CommandText = SQL;
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -142,7 +142,7 @@ namespace DoNowAPI.Controllers
                     SQL = "SELECT LeadID,Date, UserID, IFNULL(Lead_City,'') as City,IFNULL(Lead_State, '') as State,IFNULL(CustomerName, '')  " 
                             + " as CustomerName,IFNULL(Lead_Industry, '') As Industry, IFNULL((Case when BrokerID = 0 THEN '' ELSE " 
                              + " (Select CONCAT(IFNULL(BROKER_FIRST_NAME, ''), ' ', IFNULL(BROKER_LAST_NAME, '')) FROM dn_broker_det_e "
-                             + " Where ID = d.BrokerID) END),'') AS BROKER_NAME FROM donow.Deal_History d where CustomerName= '" + customerData.Name + "' and UserID = " + UserID;
+                             + " Where ID = d.BrokerID) END),'') AS BROKER_NAME FROM Deal_History d where CustomerName= '" + customerData.Name + "' and UserID = " + UserID;
 
 
                     cmd.CommandText = SQL;
